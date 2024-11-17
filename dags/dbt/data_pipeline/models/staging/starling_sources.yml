@@ -1,0 +1,30 @@
+version: 2
+
+sources:
+  - name: starling_transactions
+    description: "The raw JSON transaction files"
+    database: starling_db
+    schema: raw_source
+    # DBT should run after source files are ingested. Freshness will be checked here to ensure that this went well.
+    freshness:
+      warn_after: {count: 24, period: hour}
+
+    tables:
+      - name: raw_transactions
+        description: "Raw transactions table, contains raw JSON and ingestion time."
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: |
+                raw_json IS NOT NULL 
+                AND LENGTH(raw_json::TEXT) > 2 
+                AND ingestion_time = (
+                  SELECT MAX(ingestion_time)
+                  FROM {{ this }}
+                )
+        columns:
+          - name: raw_json
+            description: "Raw JSON data from the Starling API."
+          - name: ingestion_time
+            description: "Timestamp when the transaction was ingested."
+            tests:
+              - not_null
