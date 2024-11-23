@@ -13,7 +13,7 @@ from cosmos.profiles import SnowflakeUserPasswordProfileMapping
 with DAG(
     dag_id="starling_ingest",
     default_args = {"owner":"cwallace","start_date":datetime(2024,11,17)},
-    schedule_interval = None,
+    schedule_interval ="@daily",
     catchup=False
 ) as dag: 
     #Task 1 - Run the Starling Ingestion script
