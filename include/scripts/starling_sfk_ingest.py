@@ -25,10 +25,6 @@ def fetch_and_save_connection_details():
      }
     return conn_details
 
-def load_starling_sfk_config_details(config_file_path):
-     with open(config_file_path,"r") as config_file:
-        conn_details = json.load(config_file)
-        
 
 def get_starling_transactions():
     personal_token_RO = Variable.get('starling_personal_token_RO')
